@@ -63,6 +63,10 @@ public class HammingCoder {
 		
 		System.out.println("Reversed with hamming code: " + code );
 		
+		code = reverseString(code);
+		
+		System.out.println("Bit order corrected: " + code);
+		
 		return code;
 	}
 	
