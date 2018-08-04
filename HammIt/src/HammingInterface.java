@@ -9,16 +9,16 @@ public class HammingInterface {
 	}
 	
 	public void run() {
-		String input = null;
+		String input = "";
 		
 		
-		while( !input.equals("1") || !input.equals("2") || !input.equals("3") ) {
+		while( !input.equals("1") && !input.equals("2") && !input.equals("3") ) {
 			System.out.println("*******************************");
 			System.out.println("1: Encode data to hamming code");
 			System.out.println("2: Check code for error");
 			System.out.println("3: Run example");
 			System.out.println("*******************************");
-			System.out.print("Enter Option");
+			System.out.print("Enter Option: ");
 			input = sc.nextLine();
 		}
 		
