@@ -21,14 +21,11 @@ public class HammingCoder {
 		 */
 		
 		// Reverse string
+
+		code = reverseString( code );
 		String tempString = "";
-		for( int i = 1; i <= code.length(); i++ ) {
-			tempString += code.charAt(code.length()-i);
-		}
-		System.out.println("Reversed String: " + tempString);
-		code = tempString;
-		tempString = "";
 		
+		// Add 0s for tempory parity bits and expand string
 		int tempIndex = 0;
 		int lastIndex = 0;
 		for( int i = 0; i < bits; i++ ) {
@@ -98,5 +95,13 @@ public class HammingCoder {
 		}
 		
 		return parity;
+	}
+	
+	public String reverseString(  String data ) {
+		String tempString = "";
+		for( int i = 1; i <= data.length(); i++ ) {
+			tempString += data.charAt(data.length()-i);
+		}
+		return tempString;
 	}
 }
