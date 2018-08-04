@@ -32,7 +32,7 @@ public class HammingCoder {
 		int tempIndex = 0;
 		int lastIndex = 0;
 		for( int i = 0; i < bits; i++ ) {
-			tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2))-1;
+			tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2)) -1;
 			tempString += "0" + code.substring(lastIndex, lastIndex + tempIndex < code.length()? tempIndex:code.length());
 			lastIndex = tempIndex;
 			System.out.println(tempString);
@@ -59,9 +59,9 @@ public class HammingCoder {
 				lastIndex += 2 * tempIndex;
 			}
 			
-			if( !parity && currentBit +1 < code.length() )
+			if( !parity && currentBit < code.length() )
 				code = code.substring(0, currentBit -1 ) + "1" + code.substring(currentBit , code.length());
-			
+			parity = true;
 		}
 		
 		System.out.println("Reversed with hamming code: " + code );
