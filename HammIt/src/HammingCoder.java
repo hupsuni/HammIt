@@ -1,7 +1,18 @@
-
+/**
+ * A hamming code generator/checker for positive parity
+ * 
+ * @author Nick Huppert
+ *
+ */
 public class HammingCoder {
 	
-	
+	/**
+	 * Takes a String input representing an integer value, converts it to a
+	 * binary string, injects hamming code and returns a String representation
+	 * 
+	 * @param A string representing an integer
+	 * @return Returns a string representing binary data with hamming code injected
+	 */
 	public String encodeData( String data ) {
 		// Convert string to int, then to binary string
 		String code = Integer.toBinaryString( Integer.parseInt(data) );

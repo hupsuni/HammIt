@@ -1,5 +1,10 @@
 import java.util.Scanner;
 
+/**
+ * Interface to drive the hamming code program
+ * @author Nick Huppert
+ *
+ */
 public class HammingInterface {
 	private HammingCoder hammingCoder;
 	private Scanner sc = new Scanner( System.in );
