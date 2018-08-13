@@ -13,16 +13,18 @@ public class HammingCoder {
 	 * @param A string representing an integer
 	 * @return Returns a string representing binary data with hamming code injected
 	 */
-	public String encodeData( String data ) {
+	public String encodeData( String data, boolean verbose ) {
 		// Convert string to int, then to binary string
 		String code = Integer.toBinaryString( Integer.parseInt(data) );
 		
-		System.out.println( "Data in: " + data );
-		System.out.println( "As binary: " + code );
-		
 		int bits = calculateParityBits( code );
 		
-		System.out.println( "Requires " + bits + " parity bits to represent hamming code");
+		if ( verbose ) {
+			System.out.println("Data in: " + data);
+			System.out.println("As binary: " + code);
+			System.out.println("Requires " + bits + " parity bits to represent hamming code");
+		}
+		
 		
 		/* Create new bit string with hamming bits inserted as 0s
 		 * Make and concatenate substrings based on 2^n where
@@ -43,9 +45,10 @@ public class HammingCoder {
 			tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2)) -1;
 			tempString += "0" + code.substring(lastIndex, lastIndex + tempIndex < code.length()? tempIndex:code.length());
 			lastIndex = tempIndex;
-			System.out.println(tempString);
+			
 		}
-		System.out.println("Reversed string with 0s for parity bits: " + tempString);
+		if( verbose )
+			System.out.println("Reversed string with 0s for parity bits: " + tempString);
 		code = tempString;
 		// Figure out how to mathmatically count parity for each bit and insert said bits
 		
@@ -73,16 +76,22 @@ public class HammingCoder {
 			parity = true;
 		}
 		
-		System.out.println("Reversed with hamming code: " + code );
+		if( verbose )
+			System.out.println("Reversed with hamming code: " + code );
 		
 		code = reverseString(code);
 		
-		System.out.println("Bit order corrected: " + code);
+		if( verbose )
+			System.out.println("Bit order corrected: " + code);
 		
 		return code;
 	}
 	
-	public String checkData( String data ) {
+	public String encodeData( String data ) {
+		return encodeData( data, false );
+	}
+	
+	public String checkData( String data, boolean verbose ) {
 		String code = reverseString( data );
 		int bits = inferParityBits( code );
 		int tempIndex = 0;
@@ -110,7 +119,8 @@ public class HammingCoder {
 			// If the penultimate result is false, the bits covered by this check bit 
 			// are not even parity so set the overall value to false
 			if( !checkBits[i] && currentBit < code.length() ) {
-				System.out.println( "Bit #" + i + " is not correct");
+				if( verbose )
+					System.out.println( "Bit #" + i + " is not correct");
 				checkBits[i] = false;
 			}
 						
@@ -125,21 +135,31 @@ public class HammingCoder {
 		bitInError--; // Convert from real location to array appropriate reference
 		// Correct bit in error
 		if( bitInError >= 0 ) {
-			System.out.println( "The incorrect bit is in location " + bitInError );
+			if( verbose )
+				System.out.println( "The incorrect bit is in location " + bitInError );
 			if( code.charAt( bitInError -1 ) == '1' )
 				code = code.substring(0, bitInError ) + "0" + code.substring(bitInError +1, code.length());
 			else
 				code = code.substring(0, bitInError ) + "1" + code.substring(bitInError +1 , code.length());
 				
 		} else {
-			System.out.println("The hamming code has detected no errors");
+			if( verbose ) 
+				System.out.println("The hamming code has detected no errors");
 		}
 		
 		code = reverseString( code );
-		System.out.println( code );
 		return code;
 	}
 	
+	public String checkData( String data ) {
+		return checkData( data, true ); // Operate the decoder verbosely as standard.
+	}
+	
+	/*
+	 * Take a string input, assume it contains hamming code and
+	 * calculate how many hamming bits must be present based
+	 * on length of input string.
+	 */
 	public int inferParityBits( String binaryData ) {
 		int bits = 0;
 		for( int i = 0; Math.pow(2, bits ) <= binaryData.length(); i++ ){
@@ -148,6 +168,11 @@ public class HammingCoder {
 		return bits;
 	}
 	
+	/*
+	 * Take a string input, assume it contains no hamming code
+	 * and calculate the required ammount of bits needed to
+	 * implement a hamming code.
+	 */
 	public int calculateParityBits( String binaryData ) {
 		int bits = 0;
 		for( int i = 0; Math.pow(2, bits ) <= binaryData.length() + bits; i++ ){
@@ -162,7 +187,7 @@ public class HammingCoder {
 	 * @return True: Even parity, False: Odd parity
 	 */
 	public boolean checkParity( String data ) {
-		System.out.println(data);
+		//System.out.println(data); // Prints our received string for debugging
 		boolean parity = true;
 		char dataAsChars[] = data.toCharArray();
 		for( char c: dataAsChars ) {

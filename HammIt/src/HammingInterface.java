@@ -18,11 +18,11 @@ public class HammingInterface {
 		
 		
 		while( !input.equals("1") && !input.equals("2") && !input.equals("3") ) {
-			System.out.println("*******************************");
+			System.out.println("**********************************");
 			System.out.println("1: Encode data to hamming code");
 			System.out.println("2: Check code for error");
-			System.out.println("3: Run example");
-			System.out.println("*******************************");
+			System.out.println("3: Run example with verbose steps");
+			System.out.println("**********************************");
 			System.out.print("Enter Option: ");
 			input = sc.nextLine();
 		}
@@ -41,13 +41,13 @@ public class HammingInterface {
 	}
 	
 	private void encode() {
-		System.out.println("Enter number: ");
+		System.out.print("Enter number: ");
 		String input = sc.nextLine();
 		hammingCoder.encodeData(input);
 	}
 	
 	private void check() {
-		System.out.println("Enter number: ");
+		System.out.print("Enter binary string: ");
 		String input = sc.nextLine();
 		hammingCoder.checkData(input);
 	}
