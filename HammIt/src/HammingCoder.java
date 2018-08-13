@@ -141,22 +141,24 @@ public class HammingCoder {
 			}
 						
 		}
-		
+		for( boolean b: checkBits )
+			System.out.println(b);
 		// Ascertain which bit is in error based on check bits
 		int bitInError = 0;
-		for( int i = 0; i < bits; i++ )
-			if( checkBits[i] == false )
+		for( int i = 0; i < checkBits.length; i++ )
+			if( !checkBits[i] )
 				bitInError += Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length() -2));
 		
 		bitInError--; // Convert from real location to array appropriate reference
 		// Correct bit in error
 		if( bitInError >= 0 ) {
 			if( verbose )
-				System.out.println( "The incorrect bit is in location " + bitInError );
-			if( code.charAt( bitInError -1 ) == '1' )
+				System.out.println( "The incorrect bit is in location " + (bitInError +1) );
+			if( code.charAt( bitInError ) == '1' ) {
 				code = code.substring(0, bitInError ) + "0" + code.substring(bitInError +1, code.length());
-			else
+			} else {
 				code = code.substring(0, bitInError ) + "1" + code.substring(bitInError +1 , code.length());
+			}
 				
 		} else {
 			if( verbose ) 

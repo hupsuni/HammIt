@@ -15,7 +15,7 @@ public class HammingInterface {
 	}
 	
 	public void run() {
-		test();
+		
 		String input = "";
 		
 		
@@ -58,7 +58,7 @@ public class HammingInterface {
 		test( "23" );
 		System.out.println( "\nLets test with a larger value for fun - press Enter to continue... " );
 		sc.nextLine();
-		test( "11326" );
+		test( "1031326" );
 	}
 	
 	// Generate 2 examples, encode them, check the encoded values then break the codes on purpose and try to check again
