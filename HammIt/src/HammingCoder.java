@@ -20,7 +20,7 @@ public class HammingCoder {
 		int bits = calculateParityBits( code );
 		
 		if ( verbose ) {
-			System.out.println("Data in: " + data);
+			System.out.println("Data to be encoded: " + data);
 			System.out.println("As binary: " + code);
 			System.out.println("Requires " + bits + " parity bits to represent hamming code");
 		}
@@ -42,30 +42,22 @@ public class HammingCoder {
 		int tempIndex = 1; //0;
 		int lastIndex = 0;
 		int getXBits = 0;
-		int activeBit = 1;
 		
 		for( int i = 0; i < bits; i++ ) {
-						
+			/* 
+			 * The following stupid long statement gets a double value of 2^i, converts it to a string
+			 * chops off the decimal point and parses it as an integer bevause reasons.
+			 */  
 			getXBits = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2) ); //activeBit *2;
 			
 			tempString += "0" + code.substring( lastIndex, lastIndex + getXBits -1 <= code.length()? lastIndex + getXBits -1:code.length() );//lastIndex, lastIndex + tempIndex );
 			
 			lastIndex += getXBits -1;
-			
-			activeBit = getXBits;
-			//lastIndex += lastIndex;
-			//tempIndex += tempIndex;
-			
-			//tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2) ); // -1
-			//tempString += "0" + code.substring(lastIndex, lastIndex + tempIndex < code.length()? tempIndex:code.length());
-			
-			System.out.println(tempString + "\nLastIndex: " + lastIndex + "\nActive Bit: " + activeBit + "\nGetXBits: " + getXBits );
-			//lastIndex = tempIndex+1;
-			
 		}
 		if( verbose )
 			System.out.println("Reversed string with 0s for parity bits: " + tempString);
 		code = tempString;
+		
 		// Figure out how to mathmatically count parity for each bit and insert said bits
 		
 		boolean parity = true;
@@ -86,7 +78,7 @@ public class HammingCoder {
 				lastIndex += 2 * tempIndex;
 			}
 			
-			
+			// If the value for parity is false, overwrite the 0 parity bit with a 1
 			if( !parity && currentBit < code.length() )
 				code = code.substring(0, currentBit -1 ) + "1" + code.substring(currentBit , code.length());
 			parity = true;
@@ -107,13 +99,17 @@ public class HammingCoder {
 		return encodeData( data, false );
 	}
 	
-	public String checkData( String data, boolean verbose ) {
+	public String checkData( String data, boolean verbose ) throws HammingCodeException {
 		String code = reverseString( data );
 		int bits = inferParityBits( code );
 		int tempIndex = 0;
 		int lastIndex = 0;
 		int currentBit = 0;
 		boolean checkBits[] = new boolean[bits];
+		
+		if( verbose )
+			System.out.println( "Code to be checked: " + data );
+		
 		// Initialize array as true;
 		for( int i = 0; i < checkBits.length; i++ )
 			checkBits[i] = true;
@@ -141,13 +137,14 @@ public class HammingCoder {
 			}
 						
 		}
-		for( boolean b: checkBits )
-			System.out.println(b);
 		// Ascertain which bit is in error based on check bits
 		int bitInError = 0;
 		for( int i = 0; i < checkBits.length; i++ )
 			if( !checkBits[i] )
 				bitInError += Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length() -2));
+		
+		if( bitInError > code.length() )
+			throw new HammingCodeException( "Hamming code is not valid! Can not correct." );
 		
 		bitInError--; // Convert from real location to array appropriate reference
 		// Correct bit in error
@@ -169,7 +166,7 @@ public class HammingCoder {
 		return code;
 	}
 	
-	public String checkData( String data ) {
+	public String checkData( String data ) throws HammingCodeException {
 		return checkData( data, true ); // Operate the decoder verbosely as standard.
 	}
 	
