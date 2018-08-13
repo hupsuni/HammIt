@@ -39,12 +39,28 @@ public class HammingCoder {
 		String tempString = "";
 		
 		// Add 0s for tempory parity bits and expand string
-		int tempIndex = 0;
+		int tempIndex = 1; //0;
 		int lastIndex = 0;
+		int getXBits = 0;
+		int activeBit = 1;
+		
 		for( int i = 0; i < bits; i++ ) {
-			tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2)) -1;
-			tempString += "0" + code.substring(lastIndex, lastIndex + tempIndex < code.length()? tempIndex:code.length());
-			lastIndex = tempIndex;
+						
+			getXBits = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2) ); //activeBit *2;
+			
+			tempString += "0" + code.substring( lastIndex, lastIndex + getXBits -1 <= code.length()? lastIndex + getXBits -1:code.length() );//lastIndex, lastIndex + tempIndex );
+			
+			lastIndex += getXBits -1;
+			
+			activeBit = getXBits;
+			//lastIndex += lastIndex;
+			//tempIndex += tempIndex;
+			
+			//tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2) ); // -1
+			//tempString += "0" + code.substring(lastIndex, lastIndex + tempIndex < code.length()? tempIndex:code.length());
+			
+			System.out.println(tempString + "\nLastIndex: " + lastIndex + "\nActive Bit: " + activeBit + "\nGetXBits: " + getXBits );
+			//lastIndex = tempIndex+1;
 			
 		}
 		if( verbose )

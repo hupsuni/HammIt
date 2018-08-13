@@ -15,6 +15,7 @@ public class HammingInterface {
 	}
 	
 	public void run() {
+		test();
 		String input = "";
 		
 		
