@@ -1,4 +1,8 @@
-
+/**
+ * Exception class designed to be thrown when a hamming code cannot be validated.
+ * @author Nick Huppert
+ *
+ */
 @SuppressWarnings("serial")
 public class HammingCodeException extends Exception {
 

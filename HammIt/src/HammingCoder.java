@@ -1,7 +1,7 @@
 /**
  * A hamming code generator/checker for positive parity
- * 
- * @author Nick Huppert
+ * See attached documentation for more information.
+ * @author Nick Huppert - s3729119
  *
  */
 public class HammingCoder {
@@ -30,7 +30,9 @@ public class HammingCoder {
 		 * Make and concatenate substrings based on 2^n where
 		 * 2^n represents the location a parity bit would be in
 		 * hamming code.
-		 * Reverse string first so out refreneces are correct
+		 * Reverse string first so our references are easier
+		 * for index referencing as binary is right to left and
+		 * arrays etc are left to right.
 		 */
 		
 		// Reverse string
@@ -38,15 +40,19 @@ public class HammingCoder {
 		code = reverseString( code );
 		String tempString = "";
 		
-		// Add 0s for tempory parity bits and expand string
-		int tempIndex = 1; //0;
+		// Add 0s for temporary parity bits and expand string
+		int tempIndex = 1;
 		int lastIndex = 0;
 		int getXBits = 0;
 		
 		for( int i = 0; i < bits; i++ ) {
 			/* 
 			 * The following stupid long statement gets a double value of 2^i, converts it to a string
-			 * chops off the decimal point and parses it as an integer bevause reasons.
+			 * chops off the decimal point and parses it as an integer because reasons.
+			 * Also, there is a relationship between 2^i for both where the parity bit is to be
+			 * located and how many digits are tacked on.
+			 * This code calculates where the parity bits are to go and appends the input string
+			 * onto a blank one with a placeholder 0 and 2^i-1 characters each iteration of the loop.
 			 */  
 			getXBits = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length()-2) ); //activeBit *2;
 			
@@ -58,19 +64,21 @@ public class HammingCoder {
 			System.out.println("Reversed string with 0s for parity bits: " + tempString);
 		code = tempString;
 		
-		// Figure out how to mathmatically count parity for each bit and insert said bits
-		
 		boolean parity = true;
 		int currentBit = 0;
 		
 		for( int i = 0; i < bits; i++ ) {
-			// Calc starting position and ammount of bits this parity bit reads
+			// Calculate the index of each parity bit and which bits it checks.
 			tempIndex = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length() -2));
 			currentBit = tempIndex;
 			lastIndex = tempIndex - 1;
 			
-			// 2 falses make a true. SO check parity on each substring and toggle our parity only when the result is false
-			// If an even number of parities are found in substrings we will not modify the bit, if an odd number we will
+			/*
+			 *  This chops up substrings that the current parity bit is to check and checks their parity
+			 *  using a bool, if the overall result is false the parity is odd and a 1 replaces the 0 placeholder
+			 *  If the boolean is true the placeholder 0 remains.
+			 */
+			
 			while( lastIndex < code.length() ) {
 				if( !checkParity( code.substring( lastIndex, lastIndex + tempIndex < code.length()? lastIndex + tempIndex:code.length())) )
 					parity = !parity;
@@ -110,7 +118,7 @@ public class HammingCoder {
 		if( verbose )
 			System.out.println( "Code to be checked: " + data );
 		
-		// Initialize array as true;
+		// Initialize array as true, each element corresponds to a parity bit at 2^i
 		for( int i = 0; i < checkBits.length; i++ )
 			checkBits[i] = true;
 		
@@ -119,8 +127,12 @@ public class HammingCoder {
 			currentBit = tempIndex;
 			lastIndex = tempIndex - 1;
 			
-			// 2 falses make a true. SO check parity on each substring and toggle our parity only when the result is false
-			// If an even number of parities are found in substrings we will not modify the bit, if an odd number we will
+			/*
+			 *  This chops up substrings that the current parity bit is to check and checks their parity
+			 *  which is stored in a boolean array where each index represents the parity bit at 2^i
+			 *  As each substring returns false the value is toggled meaning an even amount of odd parity
+			 *  resolves to an overall even parity.
+			 */
 			while( lastIndex < code.length() ) {
 				if( !checkParity( code.substring( lastIndex, lastIndex + tempIndex < code.length()? lastIndex + tempIndex:code.length())) )
 					checkBits[i] = !checkBits[i];
@@ -137,17 +149,22 @@ public class HammingCoder {
 			}
 						
 		}
-		// Ascertain which bit is in error based on check bits
+		/*
+		 *  Iterate through the array of booleans, if a false is recovered then
+		 *  that bit is showing a parity error. The location of the changed bit
+		 *  will be them sum of 2^i for each index i that returns false.
+		 */
 		int bitInError = 0;
 		for( int i = 0; i < checkBits.length; i++ )
 			if( !checkBits[i] )
 				bitInError += Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length() -2));
 		
+		// If the error bit is a location outside the given string the code is invalid
 		if( bitInError > code.length() )
 			throw new HammingCodeException( "Hamming code is not valid! Can not correct." );
 		
 		bitInError--; // Convert from real location to array appropriate reference
-		// Correct bit in error
+		// Correct bit in error, -1 value means no error was found
 		if( bitInError >= 0 ) {
 			if( verbose )
 				System.out.println( "The incorrect bit is in location " + (bitInError +1) );
