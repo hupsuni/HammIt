@@ -15,8 +15,10 @@ public class HammingCoder {
 	 */
 	public String encodeData( String data, boolean verbose ) {
 		// Convert string to int, then to binary string
-		String code = Integer.toBinaryString( Integer.parseInt(data) );
-		
+		return encodeBinaryData( Integer.toBinaryString( Integer.parseInt(data) ), verbose );
+	}
+	public String encodeBinaryData( String data, boolean verbose ) {
+		String code = data;
 		int bits = calculateParityBits( code );
 		
 		if ( verbose ) {
@@ -107,6 +109,10 @@ public class HammingCoder {
 		return encodeData( data, false );
 	}
 	
+	public String encodeBinaryData( String data ) {
+		return encodeBinaryData( data, false );
+	}
+	
 	public String checkData( String data, boolean verbose ) throws HammingCodeException {
 		String code = reverseString( data );
 		int bits = inferParityBits( code );
@@ -184,7 +190,7 @@ public class HammingCoder {
 	}
 	
 	public String checkData( String data ) throws HammingCodeException {
-		return checkData( data, true ); // Operate the decoder verbosely as standard.
+		return checkData( data, false ); // Operate the decoder non-verbosely as standard.
 	}
 	
 	/*
@@ -235,6 +241,63 @@ public class HammingCoder {
 		String tempString = "";
 		for( int i = 1; i <= data.length(); i++ ) {
 			tempString += data.charAt(data.length()-i);
+		}
+		return tempString;
+	}
+	
+	// Return a string of binary data with the hamming code removed
+	public String removeParityBits( String data ) {
+		String code = reverseString( data );
+		String tempString = "";
+		int bits = inferParityBits( data );
+
+		int[] parityLocations = new int[bits];
+		// Calculate where each parity bit is as an index reference
+		for( int i = 0; i < bits; i++ ) {
+			parityLocations[i] = Integer.parseInt(Double.toString(Math.pow(2, i)).substring(0, Double.toString(Math.pow(2, i)).length() -2)) -1;
+		}
+		// Strip out the bits
+		int lastIndex = 0;
+		for( int i:parityLocations ) {
+			tempString += code.substring(lastIndex, i);
+			lastIndex = i +1;
+		}
+		if( lastIndex <= code.length() )
+			tempString += code.substring(lastIndex, code.length() );
+		
+		return reverseString(tempString);
+	}
+	
+	/*
+	 * Take an input string and, character by character, convert to binary.
+	 * Append each binary representation to a string and return this binary
+	 * representation.
+	 */
+	public String stringToUnicodeBinary( String data ) {
+		
+		String coded = "";
+		int character;
+		String outMessage = "";
+		
+		for( int i = 0; i < data.length(); i++ ) {
+			// Get unicode char value and convert to binary string
+			character = (int) data.charAt(i);
+			coded = Integer.toBinaryString(character);
+			
+			// Pad the string length so it is of uniform length (8 bits)
+			for( int j = 0; j <= ( 8 - coded.length() ); j++ )
+				coded = "0" + coded;
+
+			
+			outMessage += coded;
+		}
+		return outMessage;
+	}
+	
+	public String unicodeBinaryToString( String data ) {
+		String tempString = "";
+		for( int i = 0; i < data.length(); i+=8 ) {
+			tempString += (char)Integer.parseInt(data.substring(i, i+8),2);
 		}
 		return tempString;
 	}
